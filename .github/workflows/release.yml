@@ -1,0 +1,220 @@
+name: Release
+on:
+  push:
+    tags:
+      - 'v*'
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: '1.21'
+      - name: Get version from tag
+        id: version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+      - name: Build binaries
+        run: ./build.sh ${{ steps.version.outputs.VERSION }}
+      - name: Create release
+        uses: actions/create-release@v1
+        id: create_release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+      - name: Upload yj binaries
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build-v${{ steps.version.outputs.VERSION }}/yj-macos-amd64
+          asset_name: yj-macos-amd64
+          asset_content_type: application/octet-stream
+      - name: Upload yj macOS arm64
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build-v${{ steps.version.outputs.VERSION }}/yj-macos-arm64
+          asset_name: yj-macos-arm64
+          asset_content_type: application/octet-stream
+      - name: Upload yj Linux amd64
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build-v${{ steps.version.outputs.VERSION }}/yj-linux-amd64
+          asset_name: yj-linux-amd64
+          asset_content_type: application/octet-stream
+      - name: Upload yj Linux arm64
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build-v${{ steps.version.outputs.VERSION }}/yj-linux-arm64
+          asset_name: yj-linux-arm64
+          asset_content_type: application/octet-stream
+      - name: Upload yj Linux arm v5
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build-v${{ steps.version.outputs.VERSION }}/yj-linux-arm-v5
+          asset_name: yj-linux-arm-v5
+          asset_content_type: application/octet-stream
+      - name: Upload yj Linux arm v7
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build-v${{ steps.version.outputs.VERSION }}/yj-linux-arm-v7
+          asset_name: yj-linux-arm-v7
+          asset_content_type: application/octet-stream
+      - name: Upload yj Windows
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build-v${{ steps.version.outputs.VERSION }}/yj.exe
+          asset_name: yj.exe
+          asset_content_type: application/octet-stream
+      # Upload ty binaries
+      - name: Upload ty macOS amd64
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build-v${{ steps.version.outputs.VERSION }}/ty-macos-amd64
+          asset_name: ty-macos-amd64
+          asset_content_type: application/octet-stream
+      - name: Upload ty macOS arm64
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build-v${{ steps.version.outputs.VERSION }}/ty-macos-arm64
+          asset_name: ty-macos-arm64
+          asset_content_type: application/octet-stream
+      - name: Upload ty Linux amd64
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build-v${{ steps.version.outputs.VERSION }}/ty-linux-amd64
+          asset_name: ty-linux-amd64
+          asset_content_type: application/octet-stream
+      - name: Upload ty Linux arm64
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build-v${{ steps.version.outputs.VERSION }}/ty-linux-arm64
+          asset_name: ty-linux-arm64
+          asset_content_type: application/octet-stream
+      - name: Upload ty Linux arm v5
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build-v${{ steps.version.outputs.VERSION }}/ty-linux-arm-v5
+          asset_name: ty-linux-arm-v5
+          asset_content_type: application/octet-stream
+      - name: Upload ty Linux arm v7
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build-v${{ steps.version.outputs.VERSION }}/ty-linux-arm-v7
+          asset_name: ty-linux-arm-v7
+          asset_content_type: application/octet-stream
+      - name: Upload ty Windows
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build-v${{ steps.version.outputs.VERSION }}/ty.exe
+          asset_name: ty.exe
+          asset_content_type: application/octet-stream
+      # Upload yt binaries
+      - name: Upload yt macOS amd64
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build-v${{ steps.version.outputs.VERSION }}/yt-macos-amd64
+          asset_name: yt-macos-amd64
+          asset_content_type: application/octet-stream
+      - name: Upload yt macOS arm64
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build-v${{ steps.version.outputs.VERSION }}/yt-macos-arm64
+          asset_name: yt-macos-arm64
+          asset_content_type: application/octet-stream
+      - name: Upload yt Linux amd64
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build-v${{ steps.version.outputs.VERSION }}/yt-linux-amd64
+          asset_name: yt-linux-amd64
+          asset_content_type: application/octet-stream
+      - name: Upload yt Linux arm64
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build-v${{ steps.version.outputs.VERSION }}/yt-linux-arm64
+          asset_name: yt-linux-arm64
+          asset_content_type: application/octet-stream
+      - name: Upload yt Linux arm v5
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build-v${{ steps.version.outputs.VERSION }}/yt-linux-arm-v5
+          asset_name: yt-linux-arm-v5
+          asset_content_type: application/octet-stream
+      - name: Upload yt Linux arm v7
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build-v${{ steps.version.outputs.VERSION }}/yt-linux-arm-v7
+          asset_name: yt-linux-arm-v7
+          asset_content_type: application/octet-stream
+      - name: Upload yt Windows
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build-v${{ steps.version.outputs.VERSION }}/yt.exe
+          asset_name: yt.exe
+          asset_content_type: application/octet-stream
