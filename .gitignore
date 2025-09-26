@@ -5,6 +5,9 @@
 
 /build-v*
 /yj
+/ty
+/yt
+/test-*
 
 # Binaries for programs and plugins
 *.exe
