@@ -46,7 +46,7 @@ Preserves map order.
 -i     Indent output (JSON or TOML out only)
 -k     Attempt to parse keys as objects or numeric types (YAML out only)
 -h     Show this help message
--v     Show version
+-v     Show version 
 ```
 
 ## Installation
