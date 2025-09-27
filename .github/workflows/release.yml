@@ -3,6 +3,8 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
+
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -10,22 +12,28 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
+
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
           go-version: '1.21'
+
       - name: Get version from tag
         id: version
-        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> "$GITHUB_OUTPUT"
+
       - name: Build binaries
         run: ./build.sh ${{ steps.version.outputs.VERSION }}
-      - name: Create release and upload assets
+
+      - name: Create or update release and upload assets
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.ref }}
-          name: Release ${{ github.ref }}
+          tag_name: ${{ github.ref_name }}               # Plain tag (v1.0.0)
+          name: yj v${{ steps.version.outputs.VERSION }} # Human-friendly name
           draft: false
           prerelease: false
+          overwrite: true
+          fail_on_unmatched_files: true                  # Set to false temporarily if needed
           files: |
             build-v${{ steps.version.outputs.VERSION }}/yj-macos-amd64
             build-v${{ steps.version.outputs.VERSION }}/yj-macos-arm64
